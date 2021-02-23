@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
 using BaGet.Protocol.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Versioning;
 
@@ -12,6 +13,7 @@ namespace BaGet.Hosting
     /// The Package Metadata resource, used to fetch packages' information.
     /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
     /// </summary>
+    [Authorize]
     public class PackageMetadataController : Controller
     {
         private readonly IPackageMetadataService _metadata;

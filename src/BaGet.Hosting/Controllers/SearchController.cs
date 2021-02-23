@@ -3,10 +3,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
 using BaGet.Protocol.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BaGet.Hosting
 {
+    [Authorize]
     public class SearchController : Controller
     {
         private readonly ISearchService _searchService;

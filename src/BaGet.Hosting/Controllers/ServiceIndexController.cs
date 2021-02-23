@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
 using BaGet.Protocol.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BaGet.Hosting
@@ -10,6 +11,7 @@ namespace BaGet.Hosting
     /// <summary>
     /// The NuGet Service Index. This aids NuGet client to discover this server's services.
     /// </summary>
+    [Authorize]
     public class ServiceIndexController : Controller
     {
         private readonly IServiceIndexService _serviceIndex;

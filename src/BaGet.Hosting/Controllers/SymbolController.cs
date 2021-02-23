@@ -2,12 +2,14 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace BaGet.Hosting
 {
+    [Authorize]
     public class SymbolController : Controller
     {
         private readonly IAuthenticationService _authentication;

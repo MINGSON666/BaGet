@@ -1,6 +1,13 @@
 using System;
+using System.Net.Http.Headers;
+using System.Security.Claims;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 using BaGet.Core;
 using BaGet.Hosting;
+using BaGet.Hosting.BasicAuthentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +17,7 @@ using Microsoft.AspNetCore.SpaServices.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace BaGet
@@ -51,6 +59,11 @@ namespace BaGet
             services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IPackageService>);
             services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchService>);
             services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchIndexer>);
+
+            services.AddTransient<IUserService, UserService>();
+            services.AddAuthentication("BasicAuthentication")
+                .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>
+                    ("BasicAuthentication", null);
 
             services.AddCors();
         }
@@ -98,6 +111,9 @@ namespace BaGet
             app.UseSpaStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseCors(ConfigureBaGetOptions.CorsPolicy);
             app.UseOperationCancelledMiddleware();
