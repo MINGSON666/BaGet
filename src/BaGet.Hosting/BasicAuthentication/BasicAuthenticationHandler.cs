@@ -30,15 +30,19 @@ namespace BaGet.Hosting.BasicAuthentication
         {
             User user;
 
-            if (!Request.Headers.ContainsKey("Authorization"))
-                return AuthenticateResult.Fail("Missing Authorization Header");
-
-            var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
-            var credentialBytes = Convert.FromBase64String(authHeader.Parameter);
-            var credentials = Encoding.UTF8.GetString(credentialBytes).Split(new[] { ':' }, 2);
-            var username = credentials[0];
-            var password = credentials[1];
-            user = await _userService.Authenticate(username, password);
+            try
+            {
+                var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
+                var credentialBytes = Convert.FromBase64String(authHeader.Parameter);
+                var credentials = Encoding.UTF8.GetString(credentialBytes).Split(new[] { ':' }, 2);
+                var username = credentials[0];
+                var password = credentials[1];
+                user = await _userService.Authenticate(username, password);
+            }
+            catch
+            {
+                return AuthenticateResult.Fail("Error Occured.Authorization failed.");
+            }
 
             if (user == null)
                 return AuthenticateResult.Fail("Invalid Credentials");
@@ -59,7 +63,7 @@ namespace BaGet.Hosting.BasicAuthentication
 
         protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
         {
-            Response.Headers["WWW-Authenticate"] = $"Basic, charset=\"UTF-8\"";
+            Response.Headers["WWW-Authenticate"] = $"Basic realm=\"\", charset=\"UTF-8\"";
             await base.HandleChallengeAsync(properties);
         }
     }
